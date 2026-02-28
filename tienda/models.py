@@ -1,19 +1,51 @@
 from django.db import models
-from inventario.models import BaseModel, Producto
-from django.contrib.auth.models import User
+from inventario.models import BaseModel
+
 # Create your models here.
-
 class Compra(BaseModel):
-    proveedor = models.CharField(max_length=150)
-    total = models.DecimalField(decimal_places=2, default=0,max_digits=8)
-    creado_por = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    proveedor = models.CharField(max_length=200)
+    
     class Meta:
         verbose_name = "Compra"
-        verbose_name = "Compras"
+        verbose_name_plural = "Compras"
 
+    def __str__(self):
+        return f"Compra {self.id}"
+    
 class CompraDetalle(BaseModel):
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField(default=0)
-    precio = models.DecimalField(decimal_places=2, default=0.1,max_digits=8)
+    cantidad = models.PositiveIntegerField()
     compra = models.ForeignKey('Compra', on_delete=models.CASCADE)
+    producto = models.ForeignKey('inventario.Producto', on_delete=models.CASCADE)
+    precio =  models.DecimalField(default=1, null=False, decimal_places=2, max_digits=10)
+
+    class Meta:
+        verbose_name = "Compra Detalle"
+        verbose_name_plural = "Compras Detalle"
+
+    def __str__(self):
+        return f"Compra Detalle {self.id}"
+
+class Venta(BaseModel):
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    cliente = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Venta"
+        verbose_name_plural = "Ventas"
+
+    def __str__(self):
+        return f"Venta {self.id}"
+    
+class VentaDetalle(BaseModel):
+    cantidad = models.PositiveIntegerField()
+    venta = models.ForeignKey('Venta', on_delete=models.CASCADE)
+    producto = models.ForeignKey('inventario.Producto', on_delete=models.CASCADE)
+    precio =  models.DecimalField(default=1, null=False, decimal_places=2, max_digits=10)
+
+    class Meta:
+        verbose_name = "Venta Detalle"
+        verbose_name_plural = "Ventas Detalle"
+
+    def __str__(self):
+        return f"Venta Detalle {self.id}"
